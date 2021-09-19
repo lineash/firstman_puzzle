@@ -114,11 +114,17 @@ ScenePtr game_init()
             change(game_board[random_move()]);
             mixCount--;
         }
-
-        game_board[blank+5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-            change(object);
-            return true;
-        });
+        
+        for(int i = 0; i < 25; i++)
+        {
+            game_board[i]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+                if(game_index(object)+5 == blank or game_index(object)-5 == blank or game_index(object)+1 == blank or game_index(object)-1 == blank){
+                    change(object);
+                }
+                return true;
+            });
+        }
+        /*
         game_board[blank-5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
             change(object);
             return true;
@@ -130,7 +136,7 @@ ScenePtr game_init()
         game_board[blank-1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
             change(object);
             return true;
-        });
+        });*/
         return true;
     });
     
