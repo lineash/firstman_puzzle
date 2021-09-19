@@ -21,7 +21,7 @@ int blank;
 int mixCount;
 int saveBlank;
 bool game = false;
-int endTime = 0;
+int moveCount = 0;
 
 void delay(clock_t n) //애니메이션을 위한 시간지연 함수
 {
@@ -131,14 +131,16 @@ ScenePtr game_init()
                 game_board[i]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
                     if((game == true) &&(game_index(object)+5 == blank or game_index(object)-5 == blank or game_index(object)+1 == blank or game_index(object)-1 == blank)){
                         change(object);
+                        moveCount++;
                         if(game_end())
                         {
                             game = false;
                             game_board[blank]->show();
                             char endMessage[200];
-                            sprintf(endMessage, "축하합니다!! 해결까지 %d초 걸렸습니다!", endTime);
+                            sprintf(endMessage, "축하합니다!! 해결까지 %d번 움직였습니다!", moveCount);
                             showMessage(endMessage);
                             start_button->show();
+                            moveCount = 0;
                         }
                     }
                     return true;
