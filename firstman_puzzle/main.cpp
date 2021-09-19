@@ -19,6 +19,7 @@ ObjectPtr start_button;
 //auto shuffle = Timer::create(0.1f);
 int blank;
 int mixCount;
+int saveBlank;
 bool game = true;
 
 void delay(clock_t n) //애니메이션을 위한 시간지연 함수
@@ -79,7 +80,6 @@ int random_move(){
     }
     return i;
 }
-
 ScenePtr game_init()
 {
     
@@ -114,6 +114,23 @@ ScenePtr game_init()
             change(game_board[random_move()]);
             mixCount--;
         }
+
+        game_board[blank+5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+            change(object);
+            return true;
+        });
+        game_board[blank-5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+            change(object);
+            return true;
+        });
+        game_board[blank+1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+            change(object);
+            return true;
+        });
+        game_board[blank-1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+            change(object);
+            return true;
+        });
         return true;
     });
     
@@ -128,23 +145,6 @@ int main()
     setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
     setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
     setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
-    
-    game_board[blank+5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-        change(object);
-        return true;
-    });
-    game_board[blank-5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-        change(object);
-        return true;
-    });
-    game_board[blank+1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-        change(object);
-        return true;
-    });
-    game_board[blank-1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-        change(object);
-        return true;
-    });
     
     startGame(game_init());
     
