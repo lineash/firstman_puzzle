@@ -115,7 +115,7 @@ ScenePtr game_init()
         //blank 생성
         blank = rand()%25;
         game_board[blank]->hide();
-        mixCount = 4;
+        mixCount = 100;
         
         //셔플
         while(mixCount>0)
