@@ -20,7 +20,8 @@ ObjectPtr start_button;
 int blank;
 int mixCount;
 int saveBlank;
-bool game = true;
+bool game = false;
+int endTime = 0;
 
 void delay(clock_t n) //애니메이션을 위한 시간지연 함수
 {
@@ -80,6 +81,14 @@ int random_move(){
     }
     return i;
 }
+bool game_end(){ //원본과 비교
+    
+    for ( int i = 0; i<25; i++) {
+        if(game_board[i] != original_board[i]) return false;
+    }
+    return true;
+}
+
 ScenePtr game_init()
 {
     
@@ -102,11 +111,11 @@ ScenePtr game_init()
     start_button->show();
     start_button->setOnMouseCallback([&] (ObjectPtr object, int x, int y, MouseAction action)->bool {
         start_button->hide();
-        
+        game = true;
         //blank 생성
         blank = rand()%25;
         game_board[blank]->hide();
-        mixCount = 400;
+        mixCount = 4;
         
         //셔플
         while(mixCount>0)
@@ -115,28 +124,28 @@ ScenePtr game_init()
             mixCount--;
         }
         
-        for(int i = 0; i < 25; i++)
+        if(game == true)
         {
-            game_board[i]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-                if(game_index(object)+5 == blank or game_index(object)-5 == blank or game_index(object)+1 == blank or game_index(object)-1 == blank){
-                    change(object);
-                }
-                return true;
-            });
+            for(int i = 0; i < 25; i++) //조각 이동
+            {
+                game_board[i]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+                    if((game == true) &&(game_index(object)+5 == blank or game_index(object)-5 == blank or game_index(object)+1 == blank or game_index(object)-1 == blank)){
+                        change(object);
+                        if(game_end())
+                        {
+                            game = false;
+                            game_board[blank]->show();
+                            char endMessage[200];
+                            sprintf(endMessage, "축하합니다!! 해결까지 %d초 걸렸습니다!", endTime);
+                            showMessage(endMessage);
+                            start_button->show();
+                        }
+                    }
+                    return true;
+                });
+            }
         }
-        /*
-        game_board[blank-5]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-            change(object);
-            return true;
-        });
-        game_board[blank+1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-            change(object);
-            return true;
-        });
-        game_board[blank-1]->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-            change(object);
-            return true;
-        });*/
+
         return true;
     });
     
@@ -154,5 +163,4 @@ int main()
     
     startGame(game_init());
     
-
 }
